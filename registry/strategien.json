@@ -1,0 +1,59 @@
+[
+  {
+    "id": "null-v1",
+    "profil": "null",
+    "universum": "erstlauf",
+    "entscheidung": ["vp://decision/core/null@1.0.0"],
+    "risiko": {
+      "maxPositionsgroesse": { "bp": 0 },
+      "maxGleichzeitig": 0,
+      "maxRueckgang": { "bp": 0 },
+      "maxTagesverlust": { "bp": 0 }
+    },
+    "kosten": "binance-spot-taker",
+    "notiz": "Sprosse 1: beweist, dass ohne Entscheidung exakt nichts passiert."
+  },
+  {
+    "id": "buyhold-v1",
+    "profil": "buyhold",
+    "universum": "erstlauf",
+    "entscheidung": ["vp://decision/core/buyhold@1.0.0"],
+    "risiko": {
+      "maxPositionsgroesse": { "bp": 10000 },
+      "maxGleichzeitig": 1,
+      "maxRueckgang": { "bp": 10000 },
+      "maxTagesverlust": { "bp": 10000 }
+    },
+    "kosten": "binance-spot-taker",
+    "notiz": "Sprosse 2: die Messlatte. Was sie nicht schlaegt, hat nichts hervorgebracht."
+  },
+  {
+    "id": "ema-cross-v1",
+    "profil": "ema-cross-atr14",
+    "universum": "erstlauf",
+    "entscheidung": ["vp://decision/core/ema-cross@1.0.0"],
+    "risiko": {
+      "maxPositionsgroesse": { "bp": 10000 },
+      "maxGleichzeitig": 1,
+      "maxRueckgang": { "bp": 3000 },
+      "maxTagesverlust": { "bp": 500 }
+    },
+    "kosten": "binance-spot-taker",
+    "notiz": "Sprosse 3: erste echte Kette. EMA(20/50), ATR(14)-Stopp, 1 % Risiko."
+  },
+  {
+    "id": "ema-cross-v2",
+    "profil": "ema-cross-atr10",
+    "universum": "erstlauf",
+    "entscheidung": ["vp://decision/core/ema-cross@1.0.0"],
+    "risiko": {
+      "maxPositionsgroesse": { "bp": 10000 },
+      "maxGleichzeitig": 1,
+      "maxRueckgang": { "bp": 3000 },
+      "maxTagesverlust": { "bp": 500 }
+    },
+    "kosten": "binance-spot-taker",
+    "eltern": "ema-cross-v1",
+    "notiz": "Sprosse 4: wortgleich zu v1, nur ATR(10). Das Vergleichspaar mit genau einem Unterschied."
+  }
+]

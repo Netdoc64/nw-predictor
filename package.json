@@ -1,0 +1,38 @@
+{
+  "name": "nw-predictor",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "description": "Registry-getriebener Trading-Predictor mit Simulation, Belegen und Strategievergleich. Siehe PLAN.md.",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "erstlauf": "node --experimental-strip-types scripts/erstlauf.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "echarts": "6.1.0",
+    "esbuild": "0.28.2",
+    "lightweight-charts": "5.2.1",
+    "typescript": "^5.7.2",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@vp/chart-adapter": "workspace:*",
+    "@vp/chart-bindung": "workspace:*",
+    "@vp/compute": "workspace:*",
+    "@vp/core-ids": "workspace:*",
+    "@vp/errors": "workspace:*",
+    "@vp/feeds": "workspace:*",
+    "@vp/machine": "workspace:*",
+    "@vp/mcp": "workspace:*",
+    "@vp/registry": "workspace:*",
+    "@vp/sim": "workspace:*",
+    "@vp/trace": "workspace:*",
+    "@vp/trading": "workspace:*"
+  }
+}

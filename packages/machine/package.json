@@ -1,0 +1,15 @@
+{
+  "name": "@vp/machine",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@vp/core-ids": "workspace:*",
+    "@vp/errors": "workspace:*",
+    "@vp/registry": "workspace:*",
+    "@vp/compute": "workspace:*",
+    "@vp/trace": "workspace:*"
+  }
+}

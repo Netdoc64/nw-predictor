@@ -1,0 +1,118 @@
+[
+  {
+    "id": "null",
+    "titel": "Sprosse 1 — entscheidet nie",
+    "knoten": [
+      { "id": "reihe", "def": "vp://series/core/ohlcv@1.0.0" },
+      { "id": "entscheidung", "def": "vp://decision/core/null@1.0.0" },
+      {
+        "id": "ausfuehrung",
+        "def": "vp://execution/core/naechste-oeffnung@1.0.0",
+        "eingaenge": { "absicht": "entscheidung", "reihe": "reihe" }
+      },
+      { "id": "konto", "def": "vp://pnl/core/konto@1.0.0", "eingaenge": { "ausfuehrung": "ausfuehrung" } }
+    ]
+  },
+  {
+    "id": "buyhold",
+    "titel": "Sprosse 2 — die Messlatte",
+    "knoten": [
+      { "id": "reihe", "def": "vp://series/core/ohlcv@1.0.0" },
+      {
+        "id": "entscheidung",
+        "def": "vp://decision/core/buyhold@1.0.0",
+        "eingaenge": { "reihe": "reihe" }
+      },
+      {
+        "id": "ausfuehrung",
+        "def": "vp://execution/core/naechste-oeffnung@1.0.0",
+        "eingaenge": { "absicht": "entscheidung", "reihe": "reihe" }
+      },
+      { "id": "konto", "def": "vp://pnl/core/konto@1.0.0", "eingaenge": { "ausfuehrung": "ausfuehrung" } }
+    ]
+  },
+  {
+    "id": "ema-cross-atr14",
+    "titel": "Sprosse 3 — EMA(20/50), ATR(14)",
+    "knoten": [
+      { "id": "reihe", "def": "vp://series/core/ohlcv@1.0.0" },
+      {
+        "id": "ema-schnell",
+        "def": "vp://indicator/core/ema@1.0.0",
+        "params": { "periode": 20 },
+        "eingaenge": { "reihe": "reihe" }
+      },
+      {
+        "id": "ema-langsam",
+        "def": "vp://indicator/core/ema@1.0.0",
+        "params": { "periode": 50 },
+        "eingaenge": { "reihe": "reihe" }
+      },
+      {
+        "id": "atr",
+        "def": "vp://indicator/core/atr@1.0.0",
+        "params": { "periode": 14 },
+        "eingaenge": { "reihe": "reihe" }
+      },
+      {
+        "id": "entscheidung",
+        "def": "vp://decision/core/ema-cross@1.0.0",
+        "params": { "risikoBp": 100, "atrFaktor": 2 },
+        "eingaenge": {
+          "reihe": "reihe",
+          "schnell": "ema-schnell",
+          "langsam": "ema-langsam",
+          "atr": "atr"
+        }
+      },
+      {
+        "id": "ausfuehrung",
+        "def": "vp://execution/core/naechste-oeffnung@1.0.0",
+        "eingaenge": { "absicht": "entscheidung", "reihe": "reihe" }
+      },
+      { "id": "konto", "def": "vp://pnl/core/konto@1.0.0", "eingaenge": { "ausfuehrung": "ausfuehrung" } }
+    ]
+  },
+  {
+    "id": "ema-cross-atr10",
+    "titel": "Sprosse 4 — wortgleich zu Sprosse 3, nur ATR(10)",
+    "knoten": [
+      { "id": "reihe", "def": "vp://series/core/ohlcv@1.0.0" },
+      {
+        "id": "ema-schnell",
+        "def": "vp://indicator/core/ema@1.0.0",
+        "params": { "periode": 20 },
+        "eingaenge": { "reihe": "reihe" }
+      },
+      {
+        "id": "ema-langsam",
+        "def": "vp://indicator/core/ema@1.0.0",
+        "params": { "periode": 50 },
+        "eingaenge": { "reihe": "reihe" }
+      },
+      {
+        "id": "atr",
+        "def": "vp://indicator/core/atr@1.0.0",
+        "params": { "periode": 10 },
+        "eingaenge": { "reihe": "reihe" }
+      },
+      {
+        "id": "entscheidung",
+        "def": "vp://decision/core/ema-cross@1.0.0",
+        "params": { "risikoBp": 100, "atrFaktor": 2 },
+        "eingaenge": {
+          "reihe": "reihe",
+          "schnell": "ema-schnell",
+          "langsam": "ema-langsam",
+          "atr": "atr"
+        }
+      },
+      {
+        "id": "ausfuehrung",
+        "def": "vp://execution/core/naechste-oeffnung@1.0.0",
+        "eingaenge": { "absicht": "entscheidung", "reihe": "reihe" }
+      },
+      { "id": "konto", "def": "vp://pnl/core/konto@1.0.0", "eingaenge": { "ausfuehrung": "ausfuehrung" } }
+    ]
+  }
+]

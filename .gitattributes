@@ -1,0 +1,11 @@
+# Zeilenenden: im Repo IMMER LF, auch wenn jemand unter Windows arbeitet.
+#
+# 18 Dateien lagen mit CRLF im Index — hineingeraten durch Werkzeuge, die beim
+# Schreiben stillschweigend uebersetzen. Kaputt war nichts, aber der naechste
+# Zugriff von einer anderen Seite haette jede Zeile als geaendert gemeldet, und
+# in einem oeffentlichen Repo zeigt so ein Diff auf alles ausser die Aenderung.
+* text=auto eol=lf
+
+# Angehängtes Protokoll der Autoupdate-Schleife: beim Zusammenführen beide
+# Seiten zeilenweise behalten (.claude/autoupdate/PLAYBOOK.md, S6/8).
+.claude/autoupdate/verlauf.jsonl merge=union

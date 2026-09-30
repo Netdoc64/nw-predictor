@@ -1,0 +1,37 @@
+vf-predictor
+Copyright 2026 Netdoc64
+
+Dieses Werk steht unter der Apache-Lizenz 2.0 (siehe LICENSE).
+
+────────────────────────────────────────────────────────────────────────────
+Fremde Bestandteile
+────────────────────────────────────────────────────────────────────────────
+
+Im Repo selbst liegt kein fremder Code: Abhängigkeiten kommen über den
+Paketmanager und sind nicht eingecheckt. Zwei davon landen aber in einer
+Datei, die dieses Projekt ERZEUGT — `scripts/chart.ts` bettet sie vollständig
+in `laeufe/<strategie>/chart.html` ein, damit die Ansicht ohne Netz läuft. Wer
+so eine Datei weitergibt, verteilt diesen Code mit und braucht diese Hinweise:
+
+  TradingView Lightweight Charts™
+  Copyright 2023 TradingView, Inc.
+  Apache-Lizenz 2.0 — https://www.apache.org/licenses/LICENSE-2.0
+  https://github.com/tradingview/lightweight-charts
+
+  Apache ECharts
+  Copyright The Apache Software Foundation
+  Apache-Lizenz 2.0 — https://www.apache.org/licenses/LICENSE-2.0
+  https://github.com/apache/echarts
+
+Die erzeugte Datei trägt diese Angaben selbst im Kopf — nachgesehen in
+`scripts/chart.ts`.
+
+────────────────────────────────────────────────────────────────────────────
+Marktdaten
+────────────────────────────────────────────────────────────────────────────
+
+Kursdaten liegen NICHT im Repo (`daten/` ist gitignoriert) und stehen nicht
+unter dieser Lizenz. Sie gehören dem jeweiligen Handelsplatz, und dessen
+Bedingungen gelten weiter — auch für Weitergabe. Der erste Lauf holt sie über
+die öffentliche Binance-Schnittstelle; wer sie weiterreicht, prüft vorher
+deren Lizenz (siehe PLAN.md §12/K119).

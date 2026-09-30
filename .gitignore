@@ -1,0 +1,15 @@
+node_modules/
+dependency-map.json
+*.tmp-*
+
+# Marktdaten: gross, wiederbeschaffbar, teils lizenzgebunden (PLAN.md §12/K119).
+daten/*.ndjson
+
+# Laufergebnisse. Die BELEGE eines vermerkten Laufs gehoeren aufbewahrt —
+# aber nicht hier, sondern dort, wo PLAN.md/W8 sie hinlegt.
+laeufe/
+
+# Das Autoupdate-Register ist Arbeitsmittel einer Maschine. Der LESBARE Stand
+# gehoert in die Plan-Doku (`register.mjs report --md`).
+.claude/autoupdate/*.json
+.claude/autoupdate/.aktuell

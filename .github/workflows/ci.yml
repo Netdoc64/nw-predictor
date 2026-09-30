@@ -1,0 +1,63 @@
+name: CI
+
+# Typecheck + Tests bei jedem PR und jedem Push auf main.
+#
+# WARUM ES DAS JETZT GIBT (Audit 2026-09-21): dieses Repo hatte KEINE CI —
+# nur die naechtliche Dependency-Map. Eine autonome Schleife darf aber nur
+# mergen, was eine grüne Pflichtprüfung hat; ohne sie endet jede Kante bei
+# „ein Mensch prüft".
+#
+# Der Name `ci-green` ist VERBINDLICH: die Merge-Automatik verlangt genau
+# diese Pruefung. Wer ihn aendert, laesst sie auf eine Pruefung warten, die
+# nie erscheint -- und die PR haengt, ohne dass etwas rot wird.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  # PR-Zweige: abbrechen spart Minuten. main: durchlaufen lassen.
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  ci-green:
+    # WO ER LAEUFT (seit 2026-09-22): eine PR auf den
+    # Hauptzweig -- die Sammel-PR -- IMMER auf GitHub, als Sicherung in der
+    # echten Umgebung. Alles andere (Teil-PRs gegen update/*, Push auf den
+    # Hauptzweig, Laeufe von Hand) auf dem eigenen Runner, wenn die
+    # Repo-Variable CI_RUNNER gesetzt ist; sonst ebenfalls GitHub.
+    # Ist der Rechner laenger aus: `gh variable delete CI_RUNNER`.
+    #
+    # UND NIE FUER EINE FREMDE PR (seit 2026-09-27, vor dem Oeffentlichstellen):
+    # Der eigene Runner ist ein Dienst auf einem Rechner, der noch anderes tut.
+    # In einem privaten Repo oeffnet nur ein Vertrauter eine PR; oeffentlich
+    # kann das jeder, und `pnpm install` allein genuegt -- ein `postinstall` im
+    # Fork liefe dann dort. Eine PR aus einem fremden Fork geht deshalb IMMER
+    # auf GitHub, auch wenn sie gegen `update/*` zielt.
+    #
+    # Die Bedingung steht HIER und nicht in einem spaeteren Schritt: `runs-on`
+    # entscheidet, WO der Job startet. Ein `if` weiter unten kaeme zu spaet.
+    runs-on: ${{ (vars.CI_RUNNER != '' && !(github.event_name == 'pull_request' && (github.base_ref == github.event.repository.default_branch || github.event.pull_request.head.repo.full_name != github.repository))) && vars.CI_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Abhängigkeiten
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Tests
+        run: pnpm test

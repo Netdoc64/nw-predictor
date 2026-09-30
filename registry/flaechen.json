@@ -1,0 +1,44 @@
+[
+  {
+    "id": "wurzel",
+    "titel": "Wurzel — listet die Flächen, vergleicht Strategien",
+    "strategie": null,
+    "wurzel": true,
+    "scopeMuster": ["binance:*:1h:*"],
+    "werkzeugMuster": ["vp_*"],
+    "stufe": "lesend",
+    "transport": { "art": "stdio" },
+    "budget": { "simLaeufeProStunde": 40, "antwortBytes": 120000 },
+    "identitaet": "wurzel@nw-predictor"
+  },
+  {
+    "id": "ema-cross-v1",
+    "titel": "ema-cross-v1 — EMA(20/50), ATR(14)",
+    "strategie": "ema-cross-v1",
+    "scopeMuster": ["binance:BTCUSDT:1h:*"],
+    "werkzeugMuster": [
+      "vp_registry_list", "vp_registry_get", "vp_registry_validate",
+      "vp_strategie_get", "vp_sim_run", "vp_beleg_list", "vp_beleg_get",
+      "vp_kette_get", "vp_chart_spec", "vp_errors_top"
+    ],
+    "stufe": "lesend",
+    "transport": { "art": "stdio" },
+    "budget": { "simLaeufeProStunde": 20, "antwortBytes": 80000 },
+    "identitaet": "ema-cross-v1@nw-predictor"
+  },
+  {
+    "id": "ema-cross-v2",
+    "titel": "ema-cross-v2 — EMA(20/50), ATR(10)",
+    "strategie": "ema-cross-v2",
+    "scopeMuster": ["binance:BTCUSDT:1h:*"],
+    "werkzeugMuster": [
+      "vp_registry_list", "vp_registry_get", "vp_registry_validate",
+      "vp_strategie_get", "vp_sim_run", "vp_beleg_list", "vp_beleg_get",
+      "vp_kette_get", "vp_chart_spec", "vp_errors_top"
+    ],
+    "stufe": "lesend",
+    "transport": { "art": "stdio" },
+    "budget": { "simLaeufeProStunde": 20, "antwortBytes": 80000 },
+    "identitaet": "ema-cross-v2@nw-predictor"
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "name": "@vp/mcp",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "@vp/chart-bindung": "workspace:*",
+    "@vp/core-ids": "workspace:*",
+    "@vp/errors": "workspace:*",
+    "@vp/machine": "workspace:*",
+    "@vp/registry": "workspace:*",
+    "@vp/sim": "workspace:*",
+    "@vp/trace": "workspace:*",
+    "zod": "^4.6.5"
+  }
+}

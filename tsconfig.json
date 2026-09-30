@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "allowJs": true,
+    "checkJs": false,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "exactOptionalPropertyTypes": false,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@vp/core-ids": ["packages/core-ids/src/index.ts"],
+      "@vp/errors": ["packages/errors/src/index.ts"],
+      "@vp/registry": ["packages/registry/src/index.ts"],
+      "@vp/compute": ["packages/compute/src/index.ts"],
+      "@vp/feeds": ["packages/feeds/src/index.ts"],
+      "@vp/trading": ["packages/trading/src/index.ts"],
+      "@vp/trace": ["packages/trace/src/index.ts"],
+      "@vp/machine": ["packages/machine/src/index.ts"],
+      "@vp/sim": ["packages/sim/src/index.ts"],
+      "@vp/chart-adapter": ["packages/chart-adapter/src/index.ts"],
+      "@vp/chart-bindung": ["packages/chart-bindung/src/index.ts"],
+      "@vp/mcp": ["packages/mcp/src/index.ts"]
+    }
+  },
+  "include": ["packages/*/src/**/*.ts", "packages/*/tests/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"],
+  // Die Autoupdate-Tests werden aus einer gemeinsamen Quelle gepflegt und bei
+  // jedem Abgleich ueberschrieben. Sie sind fuer eine laxere tsconfig geschrieben
+  // (kein `noUncheckedIndexedAccess`) und brechen hier den Typecheck, obwohl
+  // sie LAUFEN — vitest prueft keine Typen.
+  //
+  // Sie hier anzupassen waere Arbeit, die der naechste Sync kommentarlos
+  // zurueckschreibt. Geprueft werden sie dort, wo sie herkommen; hier laufen
+  // sie mit `pnpm test`. Ausgeschlossen ist nur der TYPECHECK, nicht der Test.
+  "exclude": [
+    "tests/autoupdate*.test.ts"
+  ]
+}

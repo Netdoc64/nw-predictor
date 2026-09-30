@@ -1,0 +1,303 @@
+[
+  {
+    "urn": "vp://series/core/ohlcv@1.0.0",
+    "kind": "series",
+    "darstellung": {
+      "art": "candles",
+      "pane": "preis",
+      "praezision": 2
+    },
+    "titel": "Normalisierte OHLCV-Reihe",
+    "eingaenge": [],
+    "params": {},
+    "ausgabeSchema": "vp://schema/ohlcv@1",
+    "lookback": {
+      "bars": 1
+    },
+    "reinheit": "rein",
+    "kosten": {
+      "cpu": "niedrig",
+      "io": false
+    }
+  },
+  {
+    "urn": "vp://indicator/core/sma@1.0.0",
+    "kind": "indicator",
+    "darstellung": {
+      "art": "line",
+      "pane": "preis",
+      "praezision": 2
+    },
+    "titel": "Gleitender Durchschnitt",
+    "eingaenge": [
+      {
+        "name": "reihe",
+        "nimmt": [
+          "series",
+          "transform"
+        ],
+        "schema": [
+          "vp://schema/ohlcv@1"
+        ]
+      }
+    ],
+    "params": {
+      "periode": 20,
+      "quelle": "close"
+    },
+    "ausgabeSchema": "vp://schema/zahl@1",
+    "lookback": {
+      "barsAus": "periode"
+    },
+    "reinheit": "zustandsbehaftet",
+    "kosten": {
+      "cpu": "niedrig",
+      "io": false
+    }
+  },
+  {
+    "urn": "vp://indicator/core/ema@1.0.0",
+    "kind": "indicator",
+    "darstellung": {
+      "art": "line",
+      "pane": "preis",
+      "praezision": 2
+    },
+    "titel": "Exponentiell gleitender Durchschnitt",
+    "eingaenge": [
+      {
+        "name": "reihe",
+        "nimmt": [
+          "series",
+          "transform"
+        ],
+        "schema": [
+          "vp://schema/ohlcv@1"
+        ]
+      }
+    ],
+    "params": {
+      "periode": 20,
+      "quelle": "close"
+    },
+    "ausgabeSchema": "vp://schema/zahl@1",
+    "lookback": {
+      "barsAus": "periode",
+      "konvergenz": "exponentiell",
+      "faktor": 5
+    },
+    "reinheit": "zustandsbehaftet",
+    "kosten": {
+      "cpu": "niedrig",
+      "io": false
+    }
+  },
+  {
+    "urn": "vp://indicator/core/atr@1.0.0",
+    "kind": "indicator",
+    "darstellung": {
+      "art": "line",
+      "pane": "eigen",
+      "praezision": 2
+    },
+    "titel": "Average True Range (Wilder)",
+    "eingaenge": [
+      {
+        "name": "reihe",
+        "nimmt": [
+          "series",
+          "transform"
+        ],
+        "schema": [
+          "vp://schema/ohlcv@1"
+        ]
+      }
+    ],
+    "params": {
+      "periode": 14
+    },
+    "ausgabeSchema": "vp://schema/zahl@1",
+    "lookback": {
+      "barsAus": "periode",
+      "konvergenz": "exponentiell",
+      "faktor": 5
+    },
+    "reinheit": "zustandsbehaftet",
+    "kosten": {
+      "cpu": "niedrig",
+      "io": false
+    }
+  },
+  {
+    "urn": "vp://decision/core/null@1.0.0",
+    "kind": "decision",
+    "titel": "Entscheidet nie",
+    "eingaenge": [],
+    "params": {},
+    "ausgabeSchema": "vp://schema/absicht@1",
+    "lookback": {
+      "bars": 0
+    },
+    "reinheit": "rein",
+    "kosten": {
+      "cpu": "niedrig",
+      "io": false
+    }
+  },
+  {
+    "urn": "vp://decision/core/buyhold@1.0.0",
+    "kind": "decision",
+    "titel": "Kauft einmal und haelt",
+    "eingaenge": [
+      {
+        "name": "reihe",
+        "nimmt": [
+          "series"
+        ],
+        "schema": [
+          "vp://schema/ohlcv@1"
+        ]
+      }
+    ],
+    "params": {
+      "anteilBp": 10000
+    },
+    "ausgabeSchema": "vp://schema/absicht@1",
+    "lookback": {
+      "bars": 1
+    },
+    "reinheit": "zustandsbehaftet",
+    "kosten": {
+      "cpu": "niedrig",
+      "io": false
+    }
+  },
+  {
+    "urn": "vp://decision/core/ema-cross@1.0.0",
+    "kind": "decision",
+    "titel": "EMA-Kreuzung mit ATR-Stopp",
+    "eingaenge": [
+      {
+        "name": "reihe",
+        "nimmt": [
+          "series"
+        ],
+        "schema": [
+          "vp://schema/ohlcv@1"
+        ]
+      },
+      {
+        "name": "schnell",
+        "nimmt": [
+          "indicator"
+        ],
+        "schema": [
+          "vp://schema/zahl@1"
+        ]
+      },
+      {
+        "name": "langsam",
+        "nimmt": [
+          "indicator"
+        ],
+        "schema": [
+          "vp://schema/zahl@1"
+        ]
+      },
+      {
+        "name": "atr",
+        "nimmt": [
+          "indicator"
+        ],
+        "schema": [
+          "vp://schema/zahl@1"
+        ]
+      }
+    ],
+    "params": {
+      "risikoBp": 100,
+      "atrFaktor": 2,
+      "maxAnteilBp": 10000
+    },
+    "ausgabeSchema": "vp://schema/absicht@1",
+    "lookback": {
+      "bars": 2
+    },
+    "reinheit": "zustandsbehaftet",
+    "kosten": {
+      "cpu": "niedrig",
+      "io": false
+    }
+  },
+  {
+    "urn": "vp://execution/core/naechste-oeffnung@1.0.0",
+    "kind": "execution",
+    "darstellung": {
+      "art": "markers",
+      "pane": "preis"
+    },
+    "titel": "Fill zur Oeffnung der naechsten Bar",
+    "eingaenge": [
+      {
+        "name": "absicht",
+        "nimmt": [
+          "decision"
+        ],
+        "schema": [
+          "vp://schema/absicht@1"
+        ]
+      },
+      {
+        "name": "reihe",
+        "nimmt": [
+          "series"
+        ],
+        "schema": [
+          "vp://schema/ohlcv@1"
+        ]
+      }
+    ],
+    "params": {},
+    "ausgabeSchema": "vp://schema/fill@1",
+    "lookback": {
+      "bars": 1
+    },
+    "reinheit": "zustandsbehaftet",
+    "kosten": {
+      "cpu": "niedrig",
+      "io": false
+    }
+  },
+  {
+    "urn": "vp://pnl/core/konto@1.0.0",
+    "kind": "pnl",
+    "darstellung": {
+      "art": "area",
+      "pane": "eigen",
+      "feld": "eigenkapital",
+      "praezision": 2
+    },
+    "titel": "Kontostand und Gewinnrechnung",
+    "eingaenge": [
+      {
+        "name": "ausfuehrung",
+        "nimmt": [
+          "execution"
+        ],
+        "schema": [
+          "vp://schema/fill@1"
+        ]
+      }
+    ],
+    "params": {},
+    "ausgabeSchema": "vp://schema/kontostand@1",
+    "lookback": {
+      "bars": 0
+    },
+    "reinheit": "zustandsbehaftet",
+    "kosten": {
+      "cpu": "niedrig",
+      "io": false
+    }
+  }
+]
