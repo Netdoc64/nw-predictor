@@ -30,6 +30,10 @@ export const CODES = {
   'VP-REG-0007': { schwere: 'error', klasse: 'calc', wiederholbar: false, text: 'Parameter nicht kanonisierbar' },
   'VP-REG-0008': { schwere: 'error', klasse: 'io', wiederholbar: true, text: 'Fremdschreiber — nichts geschrieben' },
   'VP-REG-0009': { schwere: 'warn', klasse: 'calc', wiederholbar: false, text: 'Definition ist abgekuendigt' },
+  'VP-REG-0010': { schwere: 'error', klasse: 'io', wiederholbar: false, text: 'Aktivierung abgelehnt — confirm-Hash weicht von der Vorschau ab' },
+  'VP-REG-0011': { schwere: 'error', klasse: 'io', wiederholbar: false, text: 'Aenderung ohne Urheber abgelehnt' },
+  'VP-REG-0012': { schwere: 'error', klasse: 'io', wiederholbar: false, text: 'Flaeche darf ihre eigene Definition nicht entwerfen oder aktivieren' },
+  'VP-REG-0013': { schwere: 'error', klasse: 'io', wiederholbar: false, text: 'Revision unbekannt oder kein Rollback-Ziel' },
 
   // ── Maschine ──
   'VP-MCH-0001': { schwere: 'error', klasse: 'calc', wiederholbar: false, text: 'Uebergang nicht erlaubt' },
