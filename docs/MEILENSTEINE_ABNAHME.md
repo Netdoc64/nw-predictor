@@ -87,8 +87,8 @@ MCP schreibend.
 | Kante | Was | PR | Stand |
 | --- | --- | --- | --- |
 | G79 | schreibende Werkzeuge existieren nicht, wenn nicht freigeschaltet | Bestand 5600274 | erledigt — Test `packages/mcp/tests/mcp.test.ts:73` |
-| Schreibpfad | schreibende Werkzeuge hinter Freischaltung: Entwurf und Aktivierung getrennt |  | offen |
-| G83 | Fremdschreiber-Erkennung + `confirm`-Hash aus der Vorschau |  | offen |
-| N143 | Flächen sind Registry-Definitionen: Entwurf, Aktivierung, Journal — nie Selbstbedienung |  | offen |
-| N145 | `identitaet` in jedem Journal-Eintrag und an jedem Fehler |  | offen |
+| Schreibpfad | schreibende Werkzeuge hinter Freischaltung: Entwurf und Aktivierung getrennt | #5 | erledigt — Test `packages/mcp/tests/schreiben.test.ts:86` |
+| G83 | Fremdschreiber-Erkennung + `confirm`-Hash aus der Vorschau | #5 | erledigt — Test `packages/mcp/tests/schreiben.test.ts:128` |
+| N143 | Flächen sind Registry-Definitionen: Entwurf, Aktivierung, Journal — nie Selbstbedienung | #5 | erledigt — Test `packages/mcp/tests/schreiben.test.ts:154` |
+| N145 | `identitaet` in jedem Journal-Eintrag und an jedem Fehler | #5 | erledigt — Test `packages/mcp/tests/schreiben.test.ts:142` |
 | N146 | Steuerbefehle über dieselbe Lease und denselben `confirm`-Hash; der zweite scheitert an der Version |  | offen |

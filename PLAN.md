@@ -1250,7 +1250,7 @@ Kante findet, trägt sie hier ein, bevor er sie behebt.
 | D38, D42, D50, D51, D52 | `machine/` — Warmup-Politik, Ereignisse aus dem Strom, **Replay ≡ Live**, stabile Sortierung, `erzwungen` mit Begründung |
 | E53, E54, E55, E56, E61, E63, E64, E66, E68 | `chart-adapter/`, `chart-bindung/` — sichtbares Vereinfachen, `rev`-Lücke, Marker-Flut, Farbe aus nodeHash, Whitespace, Rückschau statt Pixel, **zwei echte Treiber** |
 | F69, F70, F72, F73, F76, F78 | `errors/` — Dedupe mit exaktem Zähler, gekapselte Senken, Kanarienvogel, monotone Uhr, Code-Tabelle |
-| G79, G80, G81, G82, G85, G86 | `mcp/` — Werkzeuge existieren nur mit Stufe, Byte-Grenze + Cursor, Registry-Texte entschärft, Simulationsbudget, Alter der Code-Karte, nur stdio |
+| G79, G80, G81, G82, G83, G85, G86 | `mcp/` — Werkzeuge existieren nur mit Stufe (auch `vp_registry_upsert`/`_activate`, `confirm`-Hash, Journal mit Urheber), Byte-Grenze + Cursor, Registry-Texte entschärft, Simulationsbudget, Alter der Code-Karte, nur stdio |
 | N141–N148, N150, N151, N154, N155 | Flächen als Registry-Einträge, Allowlist, Budget je Fläche, Urheber an jedem Fehler, Bindung an eine Strategie, Vergleich nur über die Wurzel, kein Sieger, ein Prozess je Fläche |
 | H86 | `build_dependency_map.py` von Hand gesät |
 | I98, I99, I103 | `core-ids/zahlen.ts`, `nodeHash` mit `dataRevision` und `codeGeneration` |
