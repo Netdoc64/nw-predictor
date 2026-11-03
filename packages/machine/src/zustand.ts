@@ -30,6 +30,7 @@ export type Ereignis =
   | 'gap_closed'
   | 'feed_recovered'
   | 'budget_exhausted'
+  | 'lease_lost'
   | 'definition_changed'
   | 'resume'
   | 'retire';
@@ -51,6 +52,8 @@ export const UEBERGAENGE: ReadonlyArray<{
   { von: 'DEGRADED', ereignis: 'feed_recovered', nach: 'LIVE' },
   { von: 'DEGRADED', ereignis: 'gap_detected', nach: 'BACKFILL' },
   { von: '*', ereignis: 'budget_exhausted', nach: 'HALTED' },
+  // D55: ohne gueltige Lease rechnet und schreibt keine Maschine weiter.
+  { von: '*', ereignis: 'lease_lost', nach: 'HALTED' },
   { von: '*', ereignis: 'definition_changed', nach: 'RESOLVING' },
   { von: 'HALTED', ereignis: 'resume', nach: 'RESOLVING' },
   { von: '*', ereignis: 'retire', nach: 'RETIRED' },

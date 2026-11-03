@@ -1273,6 +1273,7 @@ Kante findet, trägt sie hier ein, bevor er sie behebt.
 | B17 | Lückenerkennung + `BACKFILL` mit Hysterese |
 | C25, C28, C29, C30, C34, C37 | `registry/resolve.ts`, `core-ids/kanon.ts`, `registry/speicher.ts` |
 | C37, D41 | `registry/matrix.ts` — Scope-Matrix §3.2: Kollisionsmeldung `btcusdt` vs `BTCUSDT`, Lease mit TTL, ohne eigene Lease kein Schreiben (`tests/matrix.test.ts`) |
+| D41, D55 | `machine/maschine.ts` — optionaler Lease-Anschluss: Erneuerung ab halber TTL nach der hineingereichten Uhr, sonst `lease_lost` → `HALTED` mit `VP-MCH-0003` im Journal; die zweite Maschine auf demselben Scope bekommt keine Lease (`machine/tests/lease.test.ts`) |
 | D38, D42, D50, D51, D52 | `machine/` — Warmup-Politik, Ereignisse aus dem Strom, **Replay ≡ Live**, stabile Sortierung, `erzwungen` mit Begründung |
 | E53, E54, E55, E56, E61, E63, E64, E66, E68 | `chart-adapter/`, `chart-bindung/` — sichtbares Vereinfachen, `rev`-Lücke, Marker-Flut, Farbe aus nodeHash, Whitespace, Rückschau statt Pixel, **zwei echte Treiber** |
 | F69, F70, F72, F73, F76, F78 | `errors/` — Dedupe mit exaktem Zähler, gekapselte Senken, Kanarienvogel, monotone Uhr, Code-Tabelle |

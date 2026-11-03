@@ -1,7 +1,7 @@
 import { dauer, type Bar, type Timeframe, type Uhr } from '@vp/core-ids';
 import type { Umgebung } from '@vp/compute';
 import type { Tracker } from '@vp/errors';
-import type { Plan } from '@vp/registry';
+import type { Lease, Plan } from '@vp/registry';
 import type { Rechenband } from '@vp/trace';
 import { Laeufer } from './laeufer.ts';
 import { Journal, signaleGueltig, UebergangFehler, ziel, type Ereignis, type Zustand } from './zustand.ts';
@@ -13,6 +13,20 @@ import { Journal, signaleGueltig, UebergangFehler, ziel, type Ereignis, type Zus
 // Absicht: PLAN.md §9.2.
 // ─────────────────────────────────────────────────────────────────────────────
 
+/**
+ * Der Anschluss an die Lease des Scopes (D41, D55).
+ *
+ * Die Maschine kennt nur diese Schnittstelle, nicht die Matrix-Datei dahinter;
+ * beide Aufrufe werfen, wenn die Lease nicht zu haben ist (`VP-REG-0015`,
+ * `VP-MCH-0003`).
+ */
+export interface LeaseAnschluss {
+  /** Laufzeit einer Lease; erneuert wird ab der Haelfte davon. */
+  readonly ttlMs: number;
+  erwerben(): Lease;
+  erneuern(): Lease;
+}
+
 export interface MaschineOptionen {
   readonly plan: Plan;
   readonly umgebung: Umgebung;
@@ -20,6 +34,8 @@ export interface MaschineOptionen {
   readonly uhr: Uhr;
   readonly timeframe: Timeframe;
   readonly tracker?: Tracker;
+  /** Ohne Anschluss laeuft die Maschine wie bisher (Replay, Pruefstand). */
+  readonly lease?: LeaseAnschluss;
   /** `strict` haelt an, wenn der Warmup nicht zu decken ist; `kulant` laeuft degradiert weiter. */
   readonly warmupPolitik?: 'strict' | 'kulant';
 }
@@ -41,6 +57,8 @@ export class Maschine {
   #tracker: Tracker | undefined;
   #warmupPolitik: 'strict' | 'kulant';
   #uhr: Uhr;
+  #leaseAnschluss: LeaseAnschluss | undefined;
+  #lease: Lease | null = null;
   #gesehen = 0;
   #letzteBarZeit: number | null = null;
   #gesundeInFolge = 0;
@@ -52,6 +70,7 @@ export class Maschine {
     this.#tracker = opt.tracker;
     this.#warmupPolitik = opt.warmupPolitik ?? 'kulant';
     this.#uhr = opt.uhr;
+    this.#leaseAnschluss = opt.lease;
   }
 
   get zustand(): Zustand {
@@ -105,12 +124,26 @@ export class Maschine {
 
   starte(): void {
     this.uebergang('start');
+    if (this.#leaseAnschluss) {
+      try {
+        this.#lease = this.#leaseAnschluss.erwerben();
+      } catch (e) {
+        this.#leaseVerloren(e);
+        return;
+      }
+    }
     this.uebergang('resolve_ok', { guards: { zyklenfrei: true, schemataPassen: true } });
   }
 
   /** Eine Bar. Waehrend `WARMUP` wird gerechnet, aber nichts ist gueltig. */
   schritt(bar: Bar): SchrittErgebnis {
     if (this.#zustand === 'HALTED' || this.#zustand === 'RETIRED' || this.#zustand === 'IDLE') {
+      return { zustand: this.#zustand, werte: new Map(), gueltig: false };
+    }
+
+    // D55: Erneuerung VOR Ablauf, nach der hineingereichten Uhr. Misslingt sie,
+    // wird nicht mehr gerechnet.
+    if (this.#leaseAnschluss && !this.#leasePruefen(this.#leaseAnschluss)) {
       return { zustand: this.#zustand, werte: new Map(), gueltig: false };
     }
 
@@ -152,6 +185,32 @@ export class Maschine {
       werte,
       gueltig: signaleGueltig(this.#zustand),
     };
+  }
+
+  #leasePruefen(anschluss: LeaseAnschluss): boolean {
+    const l = this.#lease;
+    if (l === null) {
+      this.#leaseVerloren(new Error('keine Lease gehalten'));
+      return false;
+    }
+    if (this.#uhr.jetzt() < l.expiresAt - anschluss.ttlMs / 2) return true;
+    try {
+      this.#lease = anschluss.erneuern();
+      return true;
+    } catch (e) {
+      this.#leaseVerloren(e);
+      return false;
+    }
+  }
+
+  #leaseVerloren(e: unknown): void {
+    this.#lease = null;
+    const code = (e as { code?: string }).code;
+    const text = e instanceof Error ? e.message : String(e);
+    this.uebergang('lease_lost', {
+      guards: { lease: false },
+      grund: `VP-MCH-0003: ${code ? `${code} ` : ''}${text}`,
+    });
   }
 
   /** Warmup ist nicht zu decken — PLAN.md §12/D38. */
