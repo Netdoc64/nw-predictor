@@ -25,8 +25,8 @@ Registry horizontal.
 | C33 | `tmp` + `rename`, Hash-Prüfung beim Laden — Absturz-/Chaos-Test fehlt |  | offen |
 | C34 | Inhalts-Hash vor dem Schreiben erneut prüfen, sonst laut abbrechen — §14 nennt es gedeckt; es gibt keinen Speicher-Test |  | offen |
 | C37 | Normalisierung beim Eintrag, Kollision (`btcusdt` vs `BTCUSDT`) wird gemeldet — §14 nennt es gedeckt; Normalisierung getestet (kern.test.ts:68), Kollisionsmeldung jetzt gemeldet (`VP-REG-0014`) | #5 | erledigt — packages/registry/tests/matrix.test.ts:48 |
-| D41 | Lease mit TTL je Scope, ohne Lease kein Schreiben | #5, #PRNR | erledigt — packages/registry/tests/matrix.test.ts:80, :93; zwei Maschinen, ein Scope: packages/machine/tests/lease.test.ts:108 |
-| D55 | Lease vor Ablauf erneuern; misslingt es, hält die Maschine selbst an | #PRNR | erledigt — packages/machine/tests/lease.test.ts:71, :85 |
+| D41 | Lease mit TTL je Scope, ohne Lease kein Schreiben | #5, #7 | erledigt — packages/registry/tests/matrix.test.ts:80, :93; zwei Maschinen, ein Scope: packages/machine/tests/lease.test.ts:108 |
+| D55 | Lease vor Ablauf erneuern; misslingt es, hält die Maschine selbst an | #7 | erledigt — packages/machine/tests/lease.test.ts:71, :85 |
 
 ## M4
 
