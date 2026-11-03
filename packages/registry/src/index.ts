@@ -3,3 +3,4 @@ export * from './speicher.ts';
 export * from './katalog.ts';
 export * from './resolve.ts';
 export * from './revisionen.ts';
+export * from './matrix.ts';

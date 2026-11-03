@@ -20,12 +20,12 @@ Registry horizontal.
 
 | Kante | Was | PR | Stand |
 | --- | --- | --- | --- |
-| Scope-Matrix §3.2 | Scope-Matrix aus Registry-Zeilen (Venue × Symbol × Timeframe × Profil), je Zeile eigener Zustand |  | offen |
+| Scope-Matrix §3.2 | Scope-Matrix aus Registry-Zeilen (Venue × Symbol × Timeframe × Profil), je Zeile eigener Zustand | #5 | erledigt — packages/registry/tests/matrix.test.ts:41 |
 | Fremdschreiber im Doppellauf | zwei Schreiber gegen dieselbe Datei: der zweite bricht laut ab (`VP-REG-0008`), nichts geht verloren — Code in `registry/speicher.ts`, aber kein Test |  | offen |
 | C33 | `tmp` + `rename`, Hash-Prüfung beim Laden — Absturz-/Chaos-Test fehlt |  | offen |
 | C34 | Inhalts-Hash vor dem Schreiben erneut prüfen, sonst laut abbrechen — §14 nennt es gedeckt; es gibt keinen Speicher-Test |  | offen |
-| C37 | Normalisierung beim Eintrag, Kollision (`btcusdt` vs `BTCUSDT`) wird gemeldet — §14 nennt es gedeckt; Normalisierung getestet (kern.test.ts:68), Kollisionsmeldung fehlt |  | offen |
-| D41 | Lease mit TTL je Scope, ohne Lease kein Schreiben |  | offen |
+| C37 | Normalisierung beim Eintrag, Kollision (`btcusdt` vs `BTCUSDT`) wird gemeldet — §14 nennt es gedeckt; Normalisierung getestet (kern.test.ts:68), Kollisionsmeldung jetzt gemeldet (`VP-REG-0014`) | #5 | erledigt — packages/registry/tests/matrix.test.ts:48 |
+| D41 | Lease mit TTL je Scope, ohne Lease kein Schreiben | #5 | erledigt — packages/registry/tests/matrix.test.ts:80, :93 |
 | D55 | Lease vor Ablauf erneuern; misslingt es, hält die Maschine selbst an |  | offen |
 
 ## M4

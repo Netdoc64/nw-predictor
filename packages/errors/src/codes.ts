@@ -34,6 +34,9 @@ export const CODES = {
   'VP-REG-0011': { schwere: 'error', klasse: 'io', wiederholbar: false, text: 'Aenderung ohne Urheber abgelehnt' },
   'VP-REG-0012': { schwere: 'error', klasse: 'io', wiederholbar: false, text: 'Flaeche darf ihre eigene Definition nicht entwerfen oder aktivieren' },
   'VP-REG-0013': { schwere: 'error', klasse: 'io', wiederholbar: false, text: 'Revision unbekannt oder kein Rollback-Ziel' },
+  'VP-REG-0014': { schwere: 'error', klasse: 'io', wiederholbar: false, text: 'Scope-Kollision — Symbol unterscheidet sich nur in Gross-/Kleinschreibung' },
+  'VP-REG-0015': { schwere: 'error', klasse: 'io', wiederholbar: true, text: 'Scope wird von einem anderen gehalten (Lease)' },
+  'VP-REG-0016': { schwere: 'error', klasse: 'io', wiederholbar: false, text: 'Scope-Zeile unbekannt oder schon vorhanden' },
 
   // ── Maschine ──
   'VP-MCH-0001': { schwere: 'error', klasse: 'calc', wiederholbar: false, text: 'Uebergang nicht erlaubt' },
