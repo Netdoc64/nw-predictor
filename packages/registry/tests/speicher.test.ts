@@ -104,11 +104,11 @@ describe('Speicher: Fremdschreiber und Sperre (C34)', () => {
 describe('Doppellauf mit zwei echten Prozessen (C34)', () => {
   const hilfe = join(dirname(fileURLToPath(import.meta.url)), 'doppellauf', 'schreiber.ts');
 
-  const starte = (kennung: string, startMs: number): Promise<{ kennung: string; ergebnis: string }> =>
+  const starte = (kennung: string, startDatei: string): Promise<{ kennung: string; ergebnis: string }> =>
     new Promise((ok, fehl) => {
       const kind = spawn(
         process.execPath,
-        ['--experimental-strip-types', '--no-warnings', hilfe, pfad, kennung, String(startMs)],
+        ['--experimental-strip-types', '--no-warnings', hilfe, pfad, kennung, startDatei],
         { stdio: ['ignore', 'pipe', 'pipe'] },
       );
       let aus = '';
@@ -123,8 +123,12 @@ describe('Doppellauf mit zwei echten Prozessen (C34)', () => {
 
   it('genau einer gewinnt, der andere wirft VP-REG-0008, kein Fortschritt geht still verloren', async () => {
     schreib(pfad, { stand: ['start'] }, null);
-    const start = Date.now() + 2500; // beide laden, dann schreiben sie im selben Augenblick
-    const [a, b] = await Promise.all([starte('A', start), starte('B', start)]);
+    const startDatei = join(wurzel, 'start');
+    const laeufe = Promise.all([starte('A', startDatei), starte('B', startDatei)]);
+    // Erst wenn beide geladen haben, faellt der Startschuss — unabhaengig von der Last des Rechners.
+    while (!existsSync(`${startDatei}.bereit-A`) || !existsSync(`${startDatei}.bereit-B`)) await new Promise((r) => setTimeout(r, 20));
+    writeFileSync(startDatei, '');
+    const [a, b] = await laeufe;
 
     expect([a.ergebnis, b.ergebnis].sort()).toEqual(['VP-REG-0008', 'ok']);
 
