@@ -939,6 +939,12 @@ Konfiguration ein Lauf gelaufen ist.
 | **M9** | **Simulation, Entscheidung, Gewinn, Beleg** | Szenario läuft über die **Live**-Maschine mit `replay`-Feed; Fill-, Kosten- und Positionsmodell getestet; Geld als Ganzzahl; Stichproben aus dem Rechenband rechnen nach | L121–L140, G82 |
 | **M10** | MCP schreibend | Entwurf/Aktivierung getrennt, `confirm`-Hash, Journal jeder Änderung mit Urheber | G79, G83, N143, N145, N146 |
 | **M11** | **Flächen-Registry + Strategievergleich** | mehrere Flächen aus einem Kern, Allowlist-Filter greift, Wurzelfläche listet; Vergleich auf allen vier Ebenen, Zuordnung findet die erste Divergenz | N144, N147–N154 |
+| **M12** | **Historienspeicher + Historien-Charts** (§17.1) | Massenimport aus Monatsarchiven mit Prüfsumme, idempotent, inklusive delisteter Paare; Abdeckungsbericht je Scope; Chart lädt jeden Zeitraum seitenweise aus dem Speicher | O162–O164, O168 |
+| **M13** | **Ereignis-Registry + Zuweisung** (§17.2) | `kuratiert` und `erkannt` getrennt, Katalog mit Revisionen und `ereignisHash`; `zuweisen()` rein und an den Grenzen getestet; Regime-Label kausal (Replay ≡ Live) | O157, O161, O169, O170 |
+| **M14** | **Gütemessung, vorwärts und rückwärts** (§17.3–17.4) | Basislinien Pflicht, Skill und Kalibrierung je Ereignis, Phase, Regime und Fold; Walk-Forward mit Purge und Embargo; Rückwärts-Folds getrennt ausgewiesen; Leave-one-event-out; der Guard für den unangetasteten Zeitraum greift im Code | O158–O160, O165–O167 |
+
+M12 und M13 hängen nur an M4. M14 braucht M8 (ein Modell, das etwas
+vorhersagt), M12 und M13.
 
 M5 ist der Punkt, ab dem das System etwas **behauptet**. Vorher ist jede Zahl
 Deko. Deshalb steht „Replay ≡ Live" in seiner Abnahme und nicht später.
@@ -1222,6 +1228,25 @@ Kante findet, trägt sie hier ein, bevor er sie behebt.
 | N155 | Netz-Transport ohne Authentifizierung | Registry, Belege und Kontostände liegen offen | `transport: netz` ist ohne `auth` **nicht startbar**; Standard bleibt stdio | G86, §7.1 |
 | N156 | Verhaltensvergleich sieht nur die Richtung | „beide entscheiden gleich" bei 160,26 USDT Unterschied — gleiche Richtung, andere Positionsgröße | die **Menge** gehört zur Entscheidungskennung; ein Ergebnisunterschied ohne Verhaltensunterschied ist ein Widerspruch und als solcher getestet | §7.3, beim Bauen gefunden |
 
+### O · Geschichte, Ereignisse, Gütemessung
+
+| ID | Kante | Was passiert | Gegenmaßnahme | Wo |
+| --- | --- | --- | --- | --- |
+| O157 | Ereignisse werden **nach** dem Ergebnis ausgewählt | man prüft genau die Lagen, in denen das Modell gut aussah — Rückschaufehler mit Beleg-Charakter | `festgelegtAm` an jedem Eintrag, `ereignisHash` steht **vor** dem Lauf fest; `erkannt`-Ereignisse aus einer Regel als unbestechliches Gegenstück, im Bericht getrennt | §17.2 |
+| O158 | Label-Fenster überlappen zwischen Training und Test | das Modell lernt die Antwort des Testfensters schon im Training | Purge (Trainingsbeispiele, deren Label-Horizont ins Testfenster reicht, fallen raus) + Embargo ≥ Label-Horizont + größter Lookback | §17.4 |
+| O159 | Ein Fold berührt den unangetasteten Zeitraum | §16.2 ist verbraucht, ohne dass es jemand gemerkt hat | Guard im Fold-Bauer, nicht als Absprache; Verstoß ist ein Fehler mit Code, kein Hinweis | §16.2, §17.4 |
+| O160 | Ein Rückwärts-Ergebnis wird als Güte berichtet | das Modell kannte die spätere Marktstruktur — die Zahl ist zu gut und sagt nichts über die Zukunft | `richtung: 'vorwaerts' \| 'rueckwaerts'` an jeder Zahl; Rückwärts nur als Stabilitätsprüfung, eigene Tabelle, nie im Gesamtwert | §17.4 |
+| O161 | Ereignisfenster in Lokalzeit angelegt | ein Ereignis rutscht um Stunden, Zuweisung an den Rändern falsch | Fenster in UTC-Millisekunden; Anzeige darf Lokalzeit, Speicher nie | A-Kanten, §17.2 |
+| O162 | Massenimport ohne Prüfsumme | ein abgebrochener Download wird zur Historie | Prüfsumme des Archivs wird geprüft; Abweichung lehnt ab, importiert nichts halb | §17.1 |
+| O163 | Archiv und REST liefern leicht verschiedene Bars für dieselbe Zeit | zwei Wahrheiten, je nach Importweg | die Quelle steckt in der `dataRevision`; Überlappung wird verglichen, Abweichung gemeldet | B25, §17.1 |
+| O164 | Historie enthält nur heute gelistete Paare | Survivorship-Bias über den ganzen Prüfstand | Import aus den Archiven nimmt delistete Paare mit; fehlen sie, steht die Einschränkung im Bericht | L131, §17.1 |
+| O165 | Skill ohne Basislinie | „Brier 0,23" klingt nach etwas und ist schlechter als die Grundrate | Klimatologie, Persistenz und gesäter Zufall laufen immer mit; berichtet wird der Skill gegen sie | §17.3 |
+| O166 | Ereignisse sind selten, die Stichprobe winzig | eine Trefferquote aus 7 Fällen wird gelesen wie eine aus 7.000 | Anzahl je Zelle steht an jeder Zahl; unter einer Mindestzahl steht „zu wenig Daten" statt eines Werts | §17.3 |
+| O167 | Viele Ereignisse geprüft, eines sieht gut aus | Mehrfachtest — irgendeine Zelle ist immer grün | Anzahl geprüfter Ereignisse und Folds im Bericht (wie L130); kein Einzelwert ohne die Verteilung | L130, §17.3 |
+| O168 | Historien-Chart lädt Millionen Bars auf einmal | Oberfläche friert, Speicher läuft voll | `snapshot` seitenweise je sichtbarem Ausschnitt, Verdichtung beim Herauszoomen, ausdrücklich gesetzte Dichte | E73, §17.1 |
+| O169 | Regime- oder Ereigniserkennung nutzt ein zentriertes Fenster | die Erkennung kennt die Zukunft, jede Zuweisung ist Look-ahead | Erkennungsregeln sind kausale Registry-Definitionen; Replay ≡ Live gilt auch für sie | D50, §17.2 |
+| O170 | Ereignis-Katalog geändert, alte Berichte verweisen auf ihn | ein Bericht lässt sich nicht mehr nachstellen | Katalog mit Revisionen wie die Registry (Entwurf/Aktivierung, §3.3); Berichte tragen den `ereignisHash`; Vergleiche nur bei gleichem Hash | §3.3, §17.2 |
+
 ---
 
 ## 13. Bewusst nicht im Umfang
@@ -1406,3 +1431,160 @@ Erst wenn alle fünf Punkte stehen, ist der erste Lauf etwas wert:
 | 3 | Zehn Stichproben aus dem Rechenband ergeben beim Nachrechnen denselben Wert |
 | 4 | Replay ≡ Live über denselben Ausschnitt |
 | 5 | Die Zuordnung zwischen `ema-cross-v1` und `-v2` nennt den ATR-Parameter als Ursache der ersten Divergenz — mit Zeitstempel |
+
+---
+
+## 17. Geschichte als Prüfstand
+
+Ein Predictor, der auf dem einen Lauf aus §16 geprüft ist, hat **eine Zahl**,
+keine Güte. Güte entsteht erst, wenn dieselbe Vorhersage über viele bekannte
+Lagen gemessen wird — Absturz, Aufschwung, Seitwärtsphase, Depeg, Pleite einer
+Börse — und zwar auf Daten, die **schon vorliegen**. Dafür braucht es drei
+Bausteine: einen Historienspeicher (M12), eine Ereignis-Registry (M13) und eine
+Gütemessung, die vorwärts und rückwärts trainiert (M14).
+
+Die Regel aus §1 gilt auch hier: ein Ereignis, eine Erkennungsregel, eine
+Kennzahl existiert genau einmal — als Eintrag in einer Registry, nicht als
+Sonderfall im Code.
+
+### 17.1 Historienspeicher und Historien-Charts (M12)
+
+| Quelle | Weg | Umfang |
+| --- | --- | --- |
+| Öffentliche Monatsarchive des Venue (Kerzen als ZIP, mit Prüfsumme) | Massenimport | alle Spot-Paare, alle Timeframes, ab Listing — **inklusive** delisteter Paare (O164) |
+| REST-Kerzen des Venue (`feeds`, M4) | Nachziehen der letzten Tage | schließt die Lücke zwischen letztem Archiv und heute |
+| CSV (M4) | Import mit Spaltenzuordnung | alles andere — Aktien, Indizes, Devisen; Weitergabe nach K119 |
+
+| Eigenschaft | Regel |
+| --- | --- |
+| Ort | Datenverzeichnis aus der Konfiguration, **außerhalb** von Git; je Scope und Monat eine Datei |
+| Im Repo | nur das Manifest: Quelle, Prüfsumme, `dataRevision`, Abdeckung — wie bei Modellgewichten (K113) |
+| Import | idempotent: ein zweiter Lauf ändert nichts und erzeugt dieselbe `dataRevision`; ein Archiv mit falscher Prüfsumme wird abgelehnt (O162) |
+| Überlappung | wo Archiv und REST dieselbe Zeit liefern, wird verglichen; Abweichung ist eine Meldung, keine stille Wahl (O163) |
+| Abdeckungsbericht | je Scope: von, bis, Lücken, Duplikate, Delisting — der Abdeckungs-Guard aus K118 liest ihn |
+
+**Historien-Charts.** Der Chart-Adapter (§5) lädt jeden Zeitraum aus dem
+Speicher, seitenweise je sichtbarem Ausschnitt (O168). Drei Layer kommen dazu,
+alle mit `source` auf ihren Registry-Knoten:
+
+| Layer | `kind` | Zeigt |
+| --- | --- | --- |
+| Ereignisse | `boxes` (Lightweight: vereinfacht, E53) | Fenster jedes Ereignisses, Farbe nach `art`, `kuratiert` und `erkannt` unterscheidbar |
+| Regime | `band` in einer Sub-Pane | das Regime-Label je Bar |
+| Vorhersage und Treffer | `markers` + `line` | Wahrscheinlichkeit und ob sie eintraf |
+
+Ein Klick auf ein Ereignis öffnet den Gütebericht für genau dieses Fenster —
+dieselbe Verknüpfung wie der Klick auf einen Beleg (§4.8).
+
+### 17.2 Ereignis-Registry und Zuweisung (M13)
+
+Ein Ereignis ist **Wissen über die Vergangenheit**, keine Berechnung — deshalb
+ist es kein `kind` der vertikalen Registry, sondern ein eigenes Objekt wie die
+Strategie (§3.5):
+
+```ts
+type Ereignis = {
+  id: string                  // 'ftx-2022-11'
+  titel: string
+  art: 'absturz' | 'aufschwung' | 'seitwaerts' | 'depeg' | 'insolvenz'
+     | 'halving' | 'makro' | 'liquiditaet'
+  scopes: ScopeKey[]          // betroffene Märkte
+  fenster: { von: TimeMs, bis: TimeMs }   // UTC-Millisekunden (O161)
+  anker?: TimeMs              // ab wann es öffentlich bekannt war
+  herkunft: 'kuratiert' | 'erkannt'
+  quelle: string              // kuratiert: Beleg; erkannt: URN der Regel
+  festgelegtAm: TimeMs        // wann der Eintrag angelegt wurde (O157)
+  notiz: string
+}
+```
+
+**Zwei Herkünfte, nie vermischt.**
+
+| Herkunft | Woher | Stärke | Schwäche |
+| --- | --- | --- | --- |
+| `kuratiert` | ein Mensch trägt bekannte Ereignisse ein | deckt, was man wissen will | Rückschaufehler: man kennt den Ausgang (O157) |
+| `erkannt` | eine **kausale** Regel als Registry-Definition: Rückgang > x % in n Bars, Volatilität > k σ, Volumensprung | reproduzierbar, unbestechlich | findet auch Unwichtiges |
+
+Der Bericht zeigt beide getrennt. Weicht die Güte auf `kuratiert` stark von der
+auf `erkannt` ab, ist das ein Hinweis auf Auswahl, nicht auf Können.
+
+**Startkatalog** (kuratiert; die Fenster werden beim Anlegen aus den Daten
+belegt, nicht aus dem Gedächtnis): Corona-Absturz 03/2020, Halving 05/2020,
+Luna/UST 05/2022, FTX 11/2022, Spot-ETF-Zulassung 01/2024, Halving 04/2024.
+
+**Regime.** Neben den Ereignissen bekommt **jede** Bar ein Regime-Label aus einer
+`erkannt`-Regel — Trend auf, Trend ab, seitwärts, hohe Volatilität. Damit deckt
+die Gütemessung die ganze Zeitachse ab, nicht nur die Höhepunkte.
+
+**Zuweisung** ist eine reine Funktion:
+
+```ts
+zuweisen(t, scope, katalog) -> { ereignisse: { id, phase: 'vorher' | 'waehrend' | 'nachher' }[], regime }
+```
+
+Jede Vorhersage und jeder Beleg bekommt so seine Ereignisse und sein Regime.
+`ereignisHash = blake3(aktiver Katalog)` steht in jedem Bericht; Berichte mit
+verschiedenem `ereignisHash` werden nicht verglichen (O170) — dieselbe Regel wie
+beim `datenHash` (§4.6).
+
+### 17.3 Gütemessung (M14)
+
+**Vorhersagegüte ist nicht Gewinn.** Ein Modell kann gut vorhersagen und mit einer
+schlechten Entscheidungsregel verlieren — und umgekehrt. Deshalb wird beides
+getrennt gemessen:
+
+| Kennzahl | Misst | Pflicht-Vergleich |
+| --- | --- | --- |
+| Brier-Score, Log-Loss | Güte der Wahrscheinlichkeit | Basislinien |
+| Kalibrierung (Zuverlässigkeitsdiagramm, ECE) | ob „70 %" auch 70 % heißt | K117 |
+| Trefferquote der Richtung | grob, aber lesbar | Basislinien |
+| Abdeckung | wie oft das Modell überhaupt eine Aussage wagt | — |
+| Gewinn über die Simulation (§4.6) | wirtschaftliche Wirkung | `buyhold-v1` |
+
+**Basislinien laufen immer mit** (O165): Klimatologie (Grundrate aus dem
+Trainingsfenster), Persistenz (die letzte Richtung) und gesäter Zufall. Berichtet
+wird der **Skill** `1 − Brier / Brier_Basis`. Ein Modell ohne positiven Skill
+gegen die Klimatologie hat nichts gelernt, egal wie gut die Trefferquote klingt.
+
+Der Bericht schneidet jede Kennzahl nach **Ereignis, Phase, Regime und Fold**.
+Jede Zelle trägt ihre Anzahl (O166); unter der Mindestzahl steht „zu wenig
+Daten". Dazu stehen `szenarioHash`, `ereignisHash`, Fold-ID und die Zahl der
+geprüften Ereignisse und Folds (O167, L130). Eine Kennzahl ohne diese Angaben
+ist eine Zahl ohne Frage (§4.7).
+
+### 17.4 Vorwärts und rückwärts trainieren
+
+| Richtung | Training | Test | Antwortet auf | Gilt als Güte? |
+| --- | --- | --- | --- | --- |
+| **vorwärts** (Walk-Forward) | `[a, b)` | `[b + Embargo, c)`, dann weiterrollen | „sagt es eine Zukunft vorher, die es nicht kannte?" | **ja** — die einzige maßgebliche Richtung |
+| **rückwärts** | `[b, c)` | `[a, b − Embargo)` | „ist das Gelernte zeitstabil, oder hängt es an einem Regime?" | **nein** — das Modell kannte die spätere Marktstruktur (O160) |
+| **Ereignis-Holdout** (leave-one-event-out) | alles außer dem Ereignisfenster ± Embargo | das Ereignisfenster | „erkennt es so etwas, ohne es gesehen zu haben?" | ja, je Ereignis |
+
+Regeln, die im Code stehen, nicht in der Absprache:
+
+| Regel | Umsetzung |
+| --- | --- |
+| Purge + Embargo | Trainingsbeispiele, deren Label-Horizont ins Testfenster reicht, fallen raus; Abstand ≥ Label-Horizont + größter Lookback (O158) |
+| Fenster | rollierend oder wachsend, im Szenario angegeben; die Fold-Grenzen gehören zum `datenHash` |
+| Unangetastet | kein Fold berührt den Zeitraum aus §16.2 — der Fold-Bauer lehnt ab (O159). Der Prüfabschnitt wird erst freigegeben, wenn die Entwicklung fertig ist |
+| Kennzeichnung | jede Zahl trägt `richtung`; rückwärts steht in einer eigenen Tabelle und nie im Gesamtwert (O160) |
+| Stabilität | die Streuung des Skill über die Folds beider Richtungen ist eine eigene Kennzahl. Große Lücke zwischen vorwärts und rückwärts heißt: das Modell hängt an einem Regime |
+
+### 17.5 Tests
+
+| Test | Prüft |
+| --- | --- |
+| Golden-Folds | fester kleiner Datensatz, die Fold-Grenzen sind byteweise gleich |
+| Leakage-Falle | synthetische Reihe, in der das Label als Feature mit Zeitversatz steckt: korrekt versetzt → kein Skill; falsch versetzt → der Split lehnt ab (K114) |
+| Purge/Embargo (Property) | kein Label-Fenster eines Trainingsbeispiels überlappt ein Testfenster |
+| Unangetastet-Guard | ein Fold, der §16.2 berührt, ist ein Fehler mit Code |
+| Basislinien | Klimatologie gegen sich selbst hat Skill **exakt** 0; Zufall liegt im erwarteten Band |
+| Zuweisung | Ränder (`t == von`, `t == bis`), überlappende Ereignisse, Phase relativ zum Anker |
+| `ereignisHash` | ein Vergleich über verschiedene Kataloge wird verweigert |
+| Import | zweiter Import ändert nichts; beschädigtes Archiv wird abgelehnt; Überlappung Archiv/REST wird gemeldet |
+| Nachrechenbar | jede Gütezahl ergibt sich neu aus gespeicherten Vorhersagen und Labels — wie ein Beleg (§4.8) |
+
+In der CI laufen die Gütetests auf **kleinen festen Datensätzen**. Die vollen
+Läufe über die Historie sind ein Befehl mit Bericht im Datenverzeichnis, kein
+CI-Gate — Märkte ändern sich, und eine rote CI, weil 2022 anders war als 2021,
+wäre eine falsche Aussage über den Code.
