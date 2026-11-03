@@ -1063,6 +1063,7 @@ Kante findet, trägt sie hier ein, bevor er sie behebt.
 | C39 | Knoten liest aus einem fremden Scope | Maschinen hängen gemeinsam; ein toter Scope legt zehn lahm | lesen ja, schreiben nie; `align` ist Pflicht; fremder Ausfall trifft nur den Zweig | §3.4 |
 | C40 | Zyklus **über** Scope-Grenzen (A liest B, B liest A) | `resolve()` je Scope sieht keinen Zyklus — beide warten | Zyklusprüfung über den Graphen **aller** aktiven Scopes | §3.4 |
 | C41 | `lookback` steht als feste Zahl in der Definition | eine EMA(50) rechnet ihren Warmup mit dem Default 20: der Plan meldet `LIVE`, während der Indikator noch anläuft — und dem Ergebnis sieht man es nicht an | `lookback.barsAus` zeigt auf den **Parameter**, nicht auf eine Konstante | §3.1, beim Bauen gefunden |
+| C42 | Absturz zwischen `rename` und Schreiben des Abdrucks (`.sha256`) | nächstes Laden meldet `VP-STORE-0002`, obwohl die Datei heil ist | gewollt laut; Mensch prüft und löscht den Abdruck — Datei und Abdruck sind kein gemeinsamer Schreibakt | §3.3 |
 
 ### D · Die Maschine
 
