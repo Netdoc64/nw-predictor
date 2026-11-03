@@ -36,6 +36,7 @@ const { werkzeuge } = await starteStdio({
   flaeche,
   pruefstand,
   dependencyMap: join(WURZEL, 'dependency-map.json'),
+  revisionenWurzel: join(WURZEL, 'registry', 'revisionen'),
 });
 
 process.stderr.write(`nw-predictor MCP · Flaeche ${id} · ${werkzeuge.length} Werkzeuge · ${pruefstand.quelle}\n`);

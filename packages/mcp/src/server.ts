@@ -10,6 +10,7 @@ import {
   fuehreAus, strategieHash, strukturVergleich, vergleiche,
   type Lauf, type Szenario,
 } from '@vp/sim';
+import { schreibWerkzeuge } from './schreiben.ts';
 import { datentext, darfWerkzeug, FlaechenFehler, kopf, pruefeFlaeche, siehtScope } from './flaeche.ts';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -44,6 +45,8 @@ export interface ServerOptionen {
   readonly jetzt?: () => number;
   /** Pfad zu `dependency-map.json`, falls vorhanden. */
   readonly dependencyMap?: string;
+  /** Wurzelordner der Revisionsdateien; ohne ihn gibt es keine schreibenden Werkzeuge. */
+  readonly revisionenWurzel?: string;
 }
 
 interface Werkzeug {
@@ -55,6 +58,8 @@ interface Werkzeug {
   readonly nurUebergreifend?: boolean;
   /** Nur auf der Wurzel. */
   readonly nurWurzel?: boolean;
+  /** Aendert Zustand — dann steht `readOnlyHint` auf false. */
+  readonly schreibend?: boolean;
   readonly tu: (args: Record<string, unknown>) => unknown;
 }
 
@@ -464,6 +469,7 @@ export function baueServer(o: ServerOptionen): GebauterServer {
         };
       },
     },
+    ...(o.revisionenWurzel ? schreibWerkzeuge({ flaeche: f, wurzel: o.revisionenWurzel, melde }) : []),
   ];
 
   // ── Registrieren — nur, was diese Flaeche tragen darf ──────────────────────
@@ -492,7 +498,7 @@ export function baueServer(o: ServerOptionen): GebauterServer {
         title: w.titel,
         description: w.beschreibung,
         inputSchema: w.eingabe,
-        annotations: { readOnlyHint: true, openWorldHint: false },
+        annotations: { readOnlyHint: w.schreibend !== true, openWorldHint: false },
       },
       async (args: Record<string, unknown>) => {
         try {
