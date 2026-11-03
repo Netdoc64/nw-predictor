@@ -72,14 +72,15 @@ describe('Entwurf und Aktivierung (G83)', () => {
     upsert(ctx(), { periode: 20 }, 'a@x');
     const pfad = join(wurzel, 'definition', 'ema.json');
     const c = vorschau(ctx(), 1).confirm;
-    // Jemand veraendert die Datei, ohne den Abdruck zu kennen: der Hash passt nicht mehr.
+    // Jemand veraendert die Datei, ohne den Abdruck zu kennen: schon beim Laden passt der Hash
+    // nicht mehr zum Abdruck neben der Datei (C33) — laut, bevor etwas aktiviert wird.
     writeFileSync(pfad, readFileSync(pfad, 'utf8').replace('20', '22'), 'utf8');
-    expect(fehlerCode(() => activate(ctx(), 1, c, 'mensch'))).toBe('VP-REG-0010');
+    expect(fehlerCode(() => activate(ctx(), 1, c, 'mensch'))).toBe('VP-STORE-0002');
   });
 
   it('kein Rest von tmp-Dateien nach dem Schreiben', () => {
     upsert(ctx(), { periode: 20 }, 'a@x');
-    expect(readdirSync(join(wurzel, 'definition'))).toEqual(['ema.json']);
+    expect(readdirSync(join(wurzel, 'definition')).filter((n) => !n.endsWith('.sha256'))).toEqual(['ema.json']);
   });
 
   it('unzulaessiger Schluessel wird abgewiesen', () => {

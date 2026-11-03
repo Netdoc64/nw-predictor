@@ -1271,7 +1271,8 @@ Kante findet, trägt sie hier ein, bevor er sie behebt.
 | A5, A6, A9, A11 | `feeds/normalisierung.ts`, `core-ids/zeit.ts` — Millisekunden-Abschnitt, Öffnungszeit, Zukunftsabweisung, Lookback in Bars |
 | B11, B12, B22, B26 | `feeds/normalisierung.ts` — Duplikate, Umsortierung, nicht-positive Preise, unplausible Bars |
 | B17 | Lückenerkennung + `BACKFILL` mit Hysterese |
-| C25, C28, C29, C30, C34, C37 | `registry/resolve.ts`, `core-ids/kanon.ts`, `registry/speicher.ts` |
+| C25, C28, C29, C30 | `registry/resolve.ts`, `core-ids/kanon.ts` |
+| C33, C34 | `registry/speicher.ts` — Abdruck neben der Datei (`VP-STORE-0002`), Rest-`tmp` ignoriert, Sperrdatei `wx` um Prüfung + `rename`, echter Doppellauf mit zwei Prozessen (`tests/speicher.test.ts`, `tests/doppellauf/`) |
 | C37, D41 | `registry/matrix.ts` — Scope-Matrix §3.2: Kollisionsmeldung `btcusdt` vs `BTCUSDT`, Lease mit TTL, ohne eigene Lease kein Schreiben (`tests/matrix.test.ts`) |
 | D38, D42, D50, D51, D52 | `machine/` — Warmup-Politik, Ereignisse aus dem Strom, **Replay ≡ Live**, stabile Sortierung, `erzwungen` mit Begründung |
 | E53, E54, E55, E56, E61, E63, E64, E66, E68 | `chart-adapter/`, `chart-bindung/` — sichtbares Vereinfachen, `rev`-Lücke, Marker-Flut, Farbe aus nodeHash, Whitespace, Rückschau statt Pixel, **zwei echte Treiber** |
