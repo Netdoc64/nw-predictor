@@ -1,19 +1,64 @@
 # nw-predictor
 
+[![CI](https://github.com/Netdoc64/nw-predictor/actions/workflows/ci.yml/badge.svg)](https://github.com/Netdoc64/nw-predictor/actions/workflows/ci.yml)
+[![Lizenz: Apache-2.0](https://img.shields.io/badge/Lizenz-Apache--2.0-blue.svg)](LICENSE)
+[![Node 24+](https://img.shields.io/badge/Node-24%2B-informational)](package.json)
+
 Registry-getriebener Trading-Predictor: die Rechenwege stehen nicht im Code,
 sondern in einer Registry — vertikal (was baut worauf auf), horizontal (für
 welche Märkte) und strategisch (welche Haltung). Eine Zustandsmaschine je Markt
 fährt den Lebenszyklus; dieselbe Maschine mit einem `replay`-Feed **ist** die
 Simulation.
 
-**Der Bauplan steht in [PLAN.md](PLAN.md).** Diese Datei sagt nur, wie man es
-startet und was heute wirklich läuft.
+Der Unterschied zu einem gewöhnlichen Backtester steckt in drei Zusagen, die
+der Code einhält und die Tests bewachen:
+
+| Zusage | Was sie verhindert |
+| --- | --- |
+| **Replay ≡ Live** | Derselbe Datensatz, einmal am Stück und einmal Bar für Bar, ergibt dasselbe. Fällt dieser Test, gibt es Look-ahead-Bias — und jede Backtest-Zahl ist wertlos. |
+| **Jede Entscheidung trägt ihre Rechenkette** | Zu jedem Fill lässt sich zurückverfolgen, aus welchen Werten er entstand, bis zur Rohbar. Eine Gewinnzahl ohne diesen Weg ist eine Behauptung. |
+| **Geld ist Festkomma, nie Fließkomma** | Die Summe aller Belege muss den Kontostand ergeben — geprüft nach jedem einzelnen Fill, nicht am Ende. |
+
+**Kein Weg zu einer Börse.** Keine Orderausführung, keine Anlageberatung — das
+ist eine Architekturentscheidung, kein fehlender Schalter ([PLAN.md](PLAN.md)
+§13).
+
+> **In English:** a registry-driven trading predictor. Calculation paths live in
+> a registry rather than in code; the same state machine that runs live also
+> runs the simulation, which is what makes replay and live provably identical.
+> It never places orders. Documentation, comments and tests are in German.
+
+**Der Bauplan steht in [PLAN.md](PLAN.md)** — Architektur, jede Entscheidung mit
+ihrem Rückweg, und ein Register von 170 Kanten, an denen so ein System still
+falsch rechnen kann. Diese Datei sagt nur, wie man es startet und was heute
+wirklich läuft.
+
+## Schnellstart
+
+```bash
+pnpm install
+pnpm test
+node --experimental-strip-types scripts/erstlauf.ts    # vier Strategien, ein Vergleich
+node --experimental-strip-types scripts/chart.ts       # eine HTML-Datei, zwei Chart-Bibliotheken
+```
+
+<details>
+<summary>PowerShell</summary>
 
 ```powershell
 pnpm install
 pnpm test
 node --experimental-strip-types scripts/erstlauf.ts
 ```
+
+</details>
+
+Node 24 oder neuer, pnpm 8. Ohne Marktdaten rechnet der erste Lauf mit einer
+reproduzierbaren Kunstreihe und sagt das im Kopf jeder Ausgabe.
+
+**Mitwirken:** [CONTRIBUTING.md](CONTRIBUTING.md) ·
+**Sicherheitsproblem:** [SECURITY.md](SECURITY.md) ·
+**Umgangston:** [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 
 ## Was heute läuft
 
@@ -89,13 +134,20 @@ Vergleich. Er findet ihn:
 
 ## Chart
 
-```powershell
+```bash
 node --experimental-strip-types scripts/chart.ts ema-cross-v1
 ```
+
+![Zwei Chart-Bibliotheken, derselbe Datenstrom: links Lightweight Charts, rechts ECharts, mit Kerzen, zwei EMA-Linien, Kauf- und Verkaufsmarken sowie ATR und Kapitalkurve in eigenen Fenstern](docs/bilder/chart-zwei-treiber.jpg)
 
 Schreibt `laeufe/ema-cross-v1/chart.html`: eine Datei, beide Bibliotheken
 eingebettet, kein Netz nötig. Links Lightweight Charts, rechts ECharts — aus
 **demselben** Op-Strom.
+
+Das Bild zeigt den Lauf auf der **Kunstreihe**, nicht auf echten Kursen — ohne
+Marktdaten rechnet das Projekt mit einer reproduzierbaren Reihe und schreibt das
+in den Kopf jeder Ausgabe. Ein Bild, das so tut, als wären es echte Kurse, wäre
+genau der stille Fehler, gegen den dieses Projekt gebaut ist.
 
 Die Layer kommen aus der Registry. Jede Definition sagt per `darstellung`, wie
 ihr Ausgang aussieht (`candles`/`line`/`area`/`markers`, Preisfenster oder
@@ -167,5 +219,5 @@ ohne Gewähr — die Einzelheiten stehen in Abschnitt 7 und 8 der Lizenz.
 
 ## Geheimnisse
 
-Venue-Schlüssel kommen vom **Business Manager**, nie aus einer Datei in diesem
-Repo. Der erste Lauf braucht keine: die Binance-Kerzen sind öffentlich.
+Venue-Schlüssel kommen aus einem externen Schlüsselspeicher, nie aus einer Datei
+in diesem Repo. Der erste Lauf braucht keine: die Binance-Kerzen sind öffentlich.

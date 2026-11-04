@@ -1,0 +1,63 @@
+name: Fehler melden
+description: Etwas rechnet, zeigt oder entscheidet anders als erwartet
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ein **Sicherheitsproblem** gehört nicht hierher — bitte
+        [privat melden](https://github.com/Netdoc64/nw-predictor/security/advisories/new).
+
+  - type: textarea
+    id: erwartet
+    attributes:
+      label: Was hast du erwartet?
+      placeholder: Der Vergleich sollte den ATR-Knoten als Ursache nennen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: passiert
+    attributes:
+      label: Was ist stattdessen passiert?
+      description: Fehlermeldung oder Ausgabe gern vollständig, als Textblock.
+    validations:
+      required: true
+
+  - type: textarea
+    id: herstellen
+    attributes:
+      label: Wie stellt man es wieder her?
+      description: >
+        Am hilfreichsten sind die Schritte samt Befehl. Hängt es an Daten, nenne
+        Instrument, Timeframe und Zeitraum — die Dateien selbst bitte nicht
+        anhängen, sie gehören dem Handelsplatz.
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: input
+    id: kante
+    attributes:
+      label: Kante aus PLAN.md
+      description: Falls es eine gibt — etwa `§12/L121`. Wenn nicht, leer lassen.
+
+  - type: textarea
+    id: umgebung
+    attributes:
+      label: Umgebung
+      description: Ausgabe von `node --version`, `pnpm --version`, Betriebssystem.
+      render: text
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: geprueft
+    attributes:
+      label: Vorher geprüft
+      options:
+        - label: '`pnpm install` ist gelaufen und `pnpm test` zeigt denselben Fehler'
+          required: true
