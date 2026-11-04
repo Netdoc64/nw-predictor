@@ -211,6 +211,6 @@ describe('Der Ausschnitt als Funktion', () => {
   });
 
   it('Registry-Texte verlieren Steuer- und Richtungszeichen', () => {
-    expect(datentext('ok‮gefaehrlich ')).toBe('okgefaehrlich');
+    expect(datentext('ok\u0007\u202Egefaehrlich\u0000')).toBe('okgefaehrlich');
   });
 });

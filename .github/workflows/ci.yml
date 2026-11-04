@@ -59,5 +59,12 @@ jobs:
       - name: Typecheck
         run: pnpm run typecheck
 
+      # Lint VOR den Tests: er braucht Sekunden und faengt ab, was ein Test
+      # nicht sieht -- etwa eine Wanduhr im Rechenweg oder ein unsichtbares
+      # Zeichen im Quelltext. Ein Lauf, der erst nach vier Minuten Tests an
+      # einer Formfrage scheitert, wird uebersprungen statt gelesen.
+      - name: Lint
+        run: pnpm run lint
+
       - name: Tests
         run: pnpm test
