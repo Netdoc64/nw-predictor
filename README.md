@@ -37,8 +37,9 @@ wirklich läuft.
 
 ```bash
 pnpm install
-pnpm test                                              # 169 Tests
+pnpm test
 node --experimental-strip-types scripts/erstlauf.ts    # vier Strategien, ein Vergleich
+node --experimental-strip-types scripts/chart.ts       # eine HTML-Datei, zwei Chart-Bibliotheken
 ```
 
 <details>
@@ -133,13 +134,20 @@ Vergleich. Er findet ihn:
 
 ## Chart
 
-```powershell
+```bash
 node --experimental-strip-types scripts/chart.ts ema-cross-v1
 ```
+
+![Zwei Chart-Bibliotheken, derselbe Datenstrom: links Lightweight Charts, rechts ECharts, mit Kerzen, zwei EMA-Linien, Kauf- und Verkaufsmarken sowie ATR und Kapitalkurve in eigenen Fenstern](docs/bilder/chart-zwei-treiber.jpg)
 
 Schreibt `laeufe/ema-cross-v1/chart.html`: eine Datei, beide Bibliotheken
 eingebettet, kein Netz nötig. Links Lightweight Charts, rechts ECharts — aus
 **demselben** Op-Strom.
+
+Das Bild zeigt den Lauf auf der **Kunstreihe**, nicht auf echten Kursen — ohne
+Marktdaten rechnet das Projekt mit einer reproduzierbaren Reihe und schreibt das
+in den Kopf jeder Ausgabe. Ein Bild, das so tut, als wären es echte Kurse, wäre
+genau der stille Fehler, gegen den dieses Projekt gebaut ist.
 
 Die Layer kommen aus der Registry. Jede Definition sagt per `darstellung`, wie
 ihr Ausgang aussieht (`candles`/`line`/`area`/`markers`, Preisfenster oder
