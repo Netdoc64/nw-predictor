@@ -50,7 +50,7 @@ export type Senke = (f: Fehler, neu: boolean) => void;
  *
  * Allowlist, nicht Blocklist: eine Blocklist vergisst das Feld, das es beim
  * naechsten Mal gibt. Geheimnisse gehoeren ohnehin nicht hierher, sondern in
- * den Business Manager — aber ein Fehlertext ist genau der Ort, an dem eins
+ * einen Schluesselspeicher — aber ein Fehlertext ist genau der Ort, an dem eins
  * versehentlich landet.
  */
 const ERLAUBTE_DATENFELDER = new Set([

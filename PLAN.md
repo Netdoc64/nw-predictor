@@ -41,7 +41,7 @@
 | V1 | Ein Node-Prozess trägt ~200 Maschinen | Scheduler (§4.5) müsste über mehrere Prozesse skalieren, Lease (§12/D41) wird zur Pflicht statt zur Vorsorge |
 | V2 | Die Venues liefern OHLCV-Bars, nicht nur Ticks | `series` müsste aus Ticks selbst aggregieren — Knoten existiert, aber Warmup und Determinismus ändern sich |
 | V3 | Der Predictor **sagt vorher, er handelt nicht** | siehe §13 — es gibt bewusst keinen Order-Pfad |
-| V4 | Venue-Schlüssel kommen aus dem **Business Manager**, nie aus einer Datei im Repo | §9.4 |
+| V4 | Venue-Schlüssel kommen aus einem externen Schlüsselspeicher, nie aus einer Datei im Repo | §9.4 |
 
 ---
 
@@ -141,7 +141,7 @@ Drei der sechs Bestandteile sind genau die, die man beim ersten Anlauf vergisst:
 | Bestandteil | Was es abdeckt | Was ohne ihn passiert |
 | --- | --- | --- |
 | `dataRevision` | Bar-Korrekturen, Splits, Feed-Wechsel | der Cache zeigt ewig die alten Werte — der stille Fehler, der Wochen später als „das Backtest-Ergebnis war nie reproduzierbar" auffällt |
-| `artifactHash` | Modellgewichte, Kalibrierungstabellen — alles, was **nicht** Parameter ist | ein ausgetauschtes Modell hat denselben Hash wie das alte (§12/K111) |
+| `artifactHash` | Modellgewichte, Kalibrierungstabellen — alles, was **nicht** Parameter ist | ein ausgetauschtes Modell hat denselben Hash wie das alte (§12/K112) |
 | `codeGeneration` | die Implementierung der Definition selbst | ein alter Cache liefert nach einem Update Werte, die kein Code mehr erzeugt (§12/I103) |
 
 ### 2.4 `canon()` — kanonische Parameter
@@ -900,10 +900,10 @@ Treiber ist nicht mehr austauschbar.
 
 ### 9.4 Geheimnisse
 
-Venue-Schlüssel kommen vom **Business Manager** (Repo `whatsapp-manager`, Reiter
-„Schlüssel"). Nichts davon wird von Hand in eine Datei geschrieben, erfunden oder
-aus einer Datei zurückgelesen. Ist der MCP-Zugang aus, ist er aus — dann sagen wir
-das, statt einen Umweg zu bauen. Im Repo steht nur der **Name** einer Variablen,
+Venue-Schlüssel kommen aus einem **externen Schlüsselspeicher** des Betreibers.
+Nichts davon wird von Hand in eine Datei geschrieben, erfunden oder aus einer
+Datei zurückgelesen. Ist der Zugang dorthin zu, ist er zu — dann sagen wir das,
+statt einen Umweg zu bauen. Im Repo steht nur der **Name** einer Variablen,
 nie ihr Wert.
 
 ### 9.5 Prozess-Lebenszyklus
@@ -928,7 +928,7 @@ Konfiguration ein Lauf gelaufen ist.
 | M | Ergebnis | Fertig, wenn … | Deckt Kanten |
 | --- | --- | --- | --- |
 | **M0** | Gerüst: pnpm, vitest, `core-ids`, `errors` | `canon()` und die Code-Tabelle sind getestet; Kanarienvogel-Test für Redaktion grün | C28, F69–F78 |
-| **M1** | Werkzeug-Anschluss | `build_dependency_map.py` gesät, Eintrag in der Verteilliste gemergt, Map-Workflow hat **nachweislich einmal gelaufen**, `repo.mjs` steht | H86–H97 |
+| **M1** | Werkzeug-Anschluss | erledigt, aber außerhalb dieses Repos: die Werkzeugkette des Betreibers ist nicht öffentlich. Ihre Kanten (Gruppe H) sind mit ihr gegangen — siehe §12 | — |
 | **M2** | Registry vertikal | Definitionen ladbar, `resolve()` rein und getestet, Zyklus- und Schema-Fehler sind Fehler | C25–C32, C35, C36, C38–C40 |
 | **M3** | Registry horizontal | Scope-Matrix, atomares Schreiben, Fremdschreiber-Erkennung greift im Doppellauf | C33, C34, C37, D41, D55 |
 | **M4** | Feeds + `series` | CSV-/Replay-Feed und ein echter Venue; Zeit-, Lücken- und Duplikat-Regeln getestet | A1–A10, B11–B26, K119 |
@@ -991,14 +991,20 @@ für Entscheidungen (§15).
 | D | Die Maschine | 18 | M5 |
 | E | Chart-Adapter | 21 | M6 |
 | F | Error-Tracker | 10 | M0 |
-| G | MCP | 8 | M7, M10 |
-| H | Werkzeug-Import | 12 | M1 |
+| G | MCP | 7 | M7, M10 |
 | I | Zahlen, Betrieb, Arbeitsplatz | 6 | M0, M2, M5 |
 | J | Bindung, Transport, Oberfläche | 8 | M6 |
 | K | Modelle, Training, Datenrecht | 9 | M8 |
 | L | Simulation, Entscheidung, Gewinn | 21 | M9 |
 | N | MCP-Flächen und Strategievergleich | 16 | M7, M11 |
-| | **Summe** | **173** | |
+| O | Geschichte, Ereignisse, Gütemessung | 14 | M12–M14 |
+| | **Summe** | **174** | |
+
+Die Gruppe **H** gab es einmal: sie beschrieb den Anschluss an das Werkzeug-Repo
+des Betreibers, das nicht öffentlich ist. Mit ihm sind ihre Kanten gegangen. Das
+steht hier, weil eine Lücke im Alphabet sonst wie ein Versehen aussieht — und
+weil die Zahlen in dieser Tabelle nachgerechnet gehören, nicht fortgeschrieben:
+sie waren an vier Stellen falsch, als diese Zeile entstand.
 
 Jede Zeile hat eine Verankerung und einen Meilenstein. Das ist die Bedingung,
 unter der dieser Plan „fertig" heißt — nicht, dass die Liste vollständig wäre.
@@ -1149,7 +1155,7 @@ Kante findet, trägt sie hier ein, bevor er sie behebt.
 | I99 | Cache-Schlüssel ohne Datenrevision | nach einer Korrektur zeigt alles weiter alte Werte | `dataRevision` steckt im `nodeHash` | §2.3, B13 |
 | I100 | POSIX-Annahmen auf Windows | Pfade brechen auf dem Arbeitsplatz, auf dem entwickelt wird | `path` überall, Tests laufen auf Windows | §11 |
 | I101 | Befehle in der Doku mit `&&` | PowerShell 5.1 wirft einen Parser-Fehler, der Befehl ist nicht klickbar | `;` oder `if ($?) { … }`, Blöcke als ```powershell | dieses Dokument |
-| I102 | Geheimnis von Hand in eine `.env` geschrieben | ein Schlüssel liegt im Klartext und niemand weiß, welcher Stand gilt | Business Manager ist die Quelle; im Repo nur der **Name** | §9.4 |
+| I102 | Geheimnis von Hand in eine `.env` geschrieben | ein Schlüssel liegt im Klartext und niemand weiß, welcher Stand gilt | der externe Schlüsselspeicher ist die Quelle; im Repo nur der **Name** | §9.4 |
 | I103 | Zeitreihen-Cache über Neustart hinweg | ein alter Cache mit neuem Code liefert Werte, die kein Code mehr erzeugt | `codeGeneration` steckt im `nodeHash`; Mismatch = kalt starten | §2.3, M2 |
 
 ### J · Bindung, Transport, Oberfläche
@@ -1276,9 +1282,8 @@ Kante findet, trägt sie hier ein, bevor er sie behebt.
 | D38, D42, D50, D51, D52 | `machine/` — Warmup-Politik, Ereignisse aus dem Strom, **Replay ≡ Live**, stabile Sortierung, `erzwungen` mit Begründung |
 | E53, E54, E55, E56, E61, E63, E64, E66, E68 | `chart-adapter/`, `chart-bindung/` — sichtbares Vereinfachen, `rev`-Lücke, Marker-Flut, Farbe aus nodeHash, Whitespace, Rückschau statt Pixel, **zwei echte Treiber** |
 | F69, F70, F72, F73, F76, F78 | `errors/` — Dedupe mit exaktem Zähler, gekapselte Senken, Kanarienvogel, monotone Uhr, Code-Tabelle |
-| G79, G80, G81, G82, G83, G85, G86 | `mcp/` — Werkzeuge existieren nur mit Stufe (auch `vp_registry_upsert`/`_activate`, `confirm`-Hash, Journal mit Urheber), Byte-Grenze + Cursor, Registry-Texte entschärft, Simulationsbudget, Alter der Code-Karte, nur stdio |
+| G79, G80, G81, G82, G83, G86 | `mcp/` — Werkzeuge existieren nur mit Stufe (auch `vp_registry_upsert`/`_activate`, `confirm`-Hash, Journal mit Urheber), Byte-Grenze + Cursor, Registry-Texte entschärft, Simulationsbudget, Alter der Code-Karte, nur stdio |
 | N141–N148, N150, N151, N154, N155 | Flächen als Registry-Einträge, Allowlist, Budget je Fläche, Urheber an jedem Fehler, Bindung an eine Strategie, Vergleich nur über die Wurzel, kein Sieger, ein Prozess je Fläche |
-| H86 | `build_dependency_map.py` von Hand gesät |
 | I98, I99, I103 | `core-ids/zahlen.ts`, `nodeHash` mit `dataRevision` und `codeGeneration` |
 | L121, L122, L123, L126, L132, L133, L135, L140 | `trading/`, `sim/`, `trace/` |
 | L129, N148 | `vergleiche()` verweigert bei abweichendem `datenHash` |

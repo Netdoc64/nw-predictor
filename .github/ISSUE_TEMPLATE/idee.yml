@@ -1,0 +1,45 @@
+name: Idee oder Kante
+description: Ein Vorschlag — oder ein Fall, den der Plan noch nicht kennt
+labels: ['enhancement']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        [PLAN.md](https://github.com/Netdoc64/nw-predictor/blob/main/PLAN.md) führt
+        in §12 ein Register von **Kanten**: Fälle, die still falsch laufen können.
+        Wenn dein Vorschlag so einer ist, ist das die wertvollste Art von Beitrag —
+        auch ohne Code.
+
+  - type: textarea
+    id: fall
+    attributes:
+      label: Worum geht es?
+      description: Was soll möglich sein, oder welcher Fall läuft still schief?
+    validations:
+      required: true
+
+  - type: textarea
+    id: ohne
+    attributes:
+      label: Was passiert ohne Gegenmaßnahme?
+      description: >
+        Bei einer Kante der wichtigste Teil. „Der Cache liefert nach einer
+        Korrektur weiter alte Werte, und es fällt erst Wochen später auf" sagt
+        mehr als „wäre gut zu beheben".
+    validations:
+      required: true
+
+  - type: textarea
+    id: vorschlag
+    attributes:
+      label: Vorschlag
+      description: Wie könnte die Gegenmaßnahme aussehen? Gern auch offen gelassen.
+
+  - type: checkboxes
+    id: grenzen
+    attributes:
+      label: Grenzen des Projekts
+      description: Siehe PLAN.md §13.
+      options:
+        - label: Mein Vorschlag führt keine Orderausführung und keine Anlageberatung ein
+          required: true

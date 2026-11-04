@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Sicherheitsproblem melden
+    url: https://github.com/Netdoc64/nw-predictor/security/advisories/new
+    about: Nicht als Issue — der private Weg hält die Lücke unter Verschluss, bis sie geschlossen ist.
+  - name: Wie dieses Projekt denkt
+    url: https://github.com/Netdoc64/nw-predictor/blob/main/PLAN.md
+    about: PLAN.md — Architektur, Entscheidungen samt Rückweg, und das Register der Kanten.
