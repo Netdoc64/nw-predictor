@@ -1,0 +1,31 @@
+# Abhängigkeiten altern still. Dependabot macht daraus eine PR, die durch
+# dieselbe CI geht wie jede andere — grün oder gar nicht.
+#
+# WARUM MONATLICH UND GEBUENDELT: wöchentlich einzeln wären bei 8 direkten
+# Abhängigkeiten schnell mehrere offene PRs pro Woche, jede mit eigenem
+# CI-Lauf. Gebündelt kommt eine PR, die man einmal liest. Sicherheitsupdates
+# meldet GitHub davon unabhängig und sofort.
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3
+    groups:
+      entwicklung:
+        patterns: ['*']
+        update-types: [minor, patch]
+    commit-message:
+      prefix: 'chore(deps)'
+    labels: ['abhaengigkeiten']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 2
+    commit-message:
+      prefix: 'chore(actions)'
+    labels: ['abhaengigkeiten']

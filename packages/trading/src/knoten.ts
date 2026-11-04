@@ -30,7 +30,6 @@ export interface LaufInfo {
   readonly datenRevision: string;
 }
 
-const BP = fix(10_000);
 
 /**
  * Ein positiver Faktor, der auch ein Bruch sein darf (`atrFaktor: 2.5`).

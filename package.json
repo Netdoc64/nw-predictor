@@ -11,14 +11,19 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "erstlauf": "node --experimental-strip-types scripts/erstlauf.ts"
   },
   "devDependencies": {
     "@types/node": "^24",
     "echarts": "6.1.0",
     "esbuild": "0.28.2",
+    "eslint": "^9",
+    "globals": "^17.14.0",
     "lightweight-charts": "5.2.1",
     "typescript": "^5.7.2",
+    "typescript-eslint": "^8",
     "vitest": "^3.2.4"
   },
   "dependencies": {

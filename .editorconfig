@@ -1,0 +1,28 @@
+# Damit nicht jeder Editor eine eigene Meinung hat.
+#
+# Die Zeilenenden stehen schon in .gitattributes (`* text=auto eol=lf`) — hier
+# noch einmal, weil .gitattributes erst beim Commit wirkt und der Editor schon
+# davor schreibt. 18 Dateien lagen einmal mit CRLF im Index; der Diff zeigte
+# danach auf alles ausser die Aenderung.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.md]
+# Zwei Leerzeichen am Zeilenende sind in Markdown ein Zeilenumbruch.
+trim_trailing_whitespace = false
+
+[*.{py,yml,yaml}]
+indent_size = 2
+
+[LICENSE]
+indent_style = unset
+insert_final_newline = unset
+trim_trailing_whitespace = false
